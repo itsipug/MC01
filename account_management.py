@@ -1,4 +1,5 @@
 def accounts():
     print("Hi from account management")
 
-print("Hello World")
+def line(char="=", length=50):
+    print(char * length)
