@@ -1,24 +1,40 @@
-#Importing of modules
-from login_access_control import *
-from account_management import *
-from depositing_withdrawal import *
+from login_access_control import login,requires_manager
+from account_management import accounts_management
+from ui_helpers import print_divider, print_main_menu
 
-width = 40
+current_staff = login()
 
-print("="*40)
-print("Secure Bank - Staff Login".center(width))
-print("="*40)
+if current_staff is not None:
+    while True:
 
-result = login()
+        print_main_menu()
+        print_divider()
+        choice = input("Select an option: ").strip()
 
-#Is none meaning failed
-if result is None:
-    print("Too many failed attempts, try again later!")
-else:
-    staff_name, role = result
+        match choice:
+            case "1":
+                #Brings user over to accounts management and everything is handled separately in accounts management
+                accounts_management()
+            case "2":
+                #Call future module here change this once done
+                print("Work in progress...")
+            case "3":
+                #Call future module here change this once done
+                print("Work in progress...")
+            case "4":
+                #Call future module here change this once done
+                print("Work in progress...")
+            case "5":
+                #Checks if user is branch manager otherwise is restricted from access
+                if requires_manager(current_staff):
+                    print("Sup manager")
+                    print("check this out")
+            case "6":
+                print("Logging out....")
+                break
+            case _:
+                print("Invalid option")
 
-    if role == "Branch Manager":
-        print("Access: transactions, freezing/closing accounts, reports")
-    else:
-        print("Access: transactions only")
+
+
 
