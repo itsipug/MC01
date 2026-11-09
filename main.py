@@ -16,7 +16,8 @@ if current_staff is not None:
         match choice:
             case "1":
                 #Brings user over to accounts management and everything is handled separately in accounts management
-                accounts("role")
+
+                accounts(current_staff)
             case "2":
                 deposit_withdrawal()
             case "3":

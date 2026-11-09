@@ -4,7 +4,10 @@
 # - manager can freeze then close it
 
 from datetime import date, timedelta   # for the maturity date
+
+import login_access_control
 from ui_helpers import print_main_menu_account_management, print_divider
+from login_access_control import is_branch_manager
 # account variables
 # these are global - module 2 uses them too
 
@@ -216,11 +219,11 @@ def view_account():
 
 # ---------- 3. freeze / close (manager only) ----------
 # Active -> Frozen -> Closed, one step each time
-def freeze_or_close_account():
+def freeze_or_close_account(staff):
     global status
 
     # check the role first, before anything else
-    if current_role != "MANAGER":
+    if not is_branch_manager(staff):
         print("X ACCESS DENIED: Freezing/closing accounts requires Branch Manager privileges.")
         return
 
@@ -257,9 +260,9 @@ def freeze_or_close_account():
 # ---------- module menu ----------
 # main menu calls this: accounts(role)
 # role is "TELLER" or "MANAGER" from the login
-def accounts(role):
+def accounts(staff):
     global current_role
-    current_role = role
+    current_role = staff["role"]
     running = True
     while running:
         print_main_menu_account_management()
@@ -273,7 +276,7 @@ def accounts(role):
         elif choice == "3":
             print("Work in progress...")
         elif choice == "4":
-            freeze_or_close_account()
+            freeze_or_close_account(staff)
         elif choice == "5":
             # goes back to the main menu
             running = False
