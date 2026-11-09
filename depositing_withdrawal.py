@@ -1,13 +1,11 @@
-def deposit():
-    print("Depositing a deposit... oh hi there!")
+from ui_helpers import print_divider,print_main_menu_deposit_withdrawal
 
 
 # SecureBank - Module 2: Deposit & Withdrawal (Milestone 1)
 # - deposit money
 # - withdraw money with the rules for each account type
 
-from datetime import date      # to compare today with the maturity date
-import account_management as acct   # acct.balance = the balance variable
+from ui_helpers import print_divider
 
 OVERDRAFT_FEE = 50.0
 LARGE_TRANSACTION = 20000.0    # above this we need to confirm twice
@@ -204,13 +202,8 @@ def withdraw():
 def deposit_withdrawal():
     running = True
     while running:
-        acct.line()            # line() is from module 1
-        print("SecureBank - Deposit / Withdrawal")
-        acct.line()
-        print("1. Deposit")
-        print("2. Withdrawal")
-        print("3. Return to Main Menu")
-        acct.line("-")
+        print_main_menu_deposit_withdrawal()
+        print_divider()
         choice = input("Select an option: ").strip()
 
         if choice == "1":

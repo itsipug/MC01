@@ -30,3 +30,10 @@ def print_main_menu_account_management():
     print("3. Search Accounts")
     print("4. Freeze / Close Account")
     print("5. Return to Main Menu")
+
+def print_main_menu_deposit_withdrawal():
+    """Prints full main menu for deposit withdrawal module"""
+    print_header("SecureBank - Deposit / Withdrawal")
+    print("1. Deposit")
+    print("2. Withdrawal")
+    print("3. Return to Main Menu")
