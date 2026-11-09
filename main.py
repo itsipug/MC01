@@ -40,26 +40,3 @@ if current_staff is not None:
 
 
 
-# TEMPORARY for testing. Delete this line once your pair's login gives you the role.
-current_role = "MANAGER"
-
-running = True
-while running:
-    print("=" * 50)
-    print("MAIN MENU")
-    print("=" * 50)
-    print("1. Account Management")
-    print("2. Deposit / Withdrawal")
-    print("3. Log Out")
-    choice = input("Select an option: ").strip()
-
-    if choice == "1":
-        accounts(current_role)
-    elif choice == "2":
-        deposit_withdrawal()
-    elif choice == "3":
-        running = False
-    else:
-        print("X Invalid option.")
-
-# save an account so you can make another account while another is still active
