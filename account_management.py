@@ -16,7 +16,7 @@ min_balance = 0.0
 term_days = 0
 maturity_days = 0
 
-BRANCE_CODE = "BRANCH 1"
+BRANCH_CODE = "BRANCH 1"
 next_sequence = 234
 
 savings_rate = 2.5
@@ -24,10 +24,7 @@ savings_min_balance = 500.0
 checking_overdraft_limit = 5000.0
 time_deposit_min = 1000.0
 
-
-"""
 def is_valid_amount(text):
-    True if text is a positive number like 500 or 500.75.
     text = text.strip()
     if text == "":
         return False
@@ -37,20 +34,19 @@ def is_valid_amount(text):
         return False
     return True
 
-
 def ask_yes_no(prompt):
     while True:
         answer = input(prompt).strip().lower()
-        if answer == "y":
+        if answer == "yes":
             return True
-        if answer == "n":
+        if answer == "no":
             return False
-        print("X Please type y or n.")
+        print("X Please type yes or no.")
 
 
 def make_account_number():
     global next_sequence
-    number = f"{BRANCH_CODE}-{next_sequence:05d}"
+    number = (f"{BRANCH_CODE}-{next_sequence:05d}")
     next_sequence = next_sequence + 1
     return number
 
@@ -60,10 +56,11 @@ def get_time_deposit_rate(days):
         return 3.25
     elif days == 60:
         return 4.00
-    else:  # 90
+    else: # FOR 90 DAYS
         return 4.75
-        """
 
+
+# INPUT FUNCTIONS
 def ask_account_type():
     while True:
         text = input("Enter account type (Savings/Checking/TimeDeposit): ").strip()
