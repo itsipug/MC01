@@ -22,7 +22,7 @@ withdrawn_today = 0.0          # how much was withdrawn so far
 tracked_account = ""           # which account the total is for
 
 
-# ---------- helper functions ----------
+#  helper functions
 def get_daily_limit():
     # gives the limit based on the account type
     if acct.acc_type == "Savings":
@@ -95,7 +95,7 @@ def double_confirm(word, amount):
     return True
 
 
-# ---------- deposit ----------
+# deposit
 def deposit():
     # check the account first
     if select_account() == False:
@@ -113,7 +113,7 @@ def deposit():
     print(f"New balance: PHP {acct.balance:,.2f}")
 
 
-# ---------- withdrawal ----------
+#  withdrawal
 # order of the checks:
 # account -> time deposit lock -> amount -> daily limit
 # -> balance rules per type -> large confirm -> then change the balance
@@ -198,7 +198,7 @@ def withdraw():
     print(f"Withdrawn today: PHP {withdrawn_today:,.2f} of PHP {daily_limit:,.2f} limit")
 
 
-# ---------- module menu ----------
+#  module menu
 # main menu calls this: deposit_withdrawal()
 def deposit_withdrawal():
     running = True
