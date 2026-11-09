@@ -4,7 +4,7 @@ from ui_helpers import print_header
 max_attempts = 3
 staff_credentials = {
     "teller": {"name": "Adrian Serrano", "password": "admin123", "role": "TELLER"},
-    "manager": {"name": "John Doe", "password": "321admin", "role": "BRANCH MANAGER"}
+    "manager": {"name": "John Doe", "password": "321admin", "role": "MANAGER"}
 }
 
 
@@ -36,7 +36,7 @@ def login():
 
 def is_branch_manager(staff):
     """Return True if this staff record has the BRANCH MANAGER role."""
-    return staff["role"] == "BRANCH MANAGER"
+    return staff["role"] == "MANAGER"
 
 def requires_manager(staff):
     """Gatekeeper for manager-only actions.
