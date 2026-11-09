@@ -1,6 +1,6 @@
 from ui_helpers import print_divider,print_main_menu_deposit_withdrawal
 import account_management as acct            # acct.balance = the balance variable from module 1
-
+from datetime import date                    # to compare today with the maturity date
 
 # SecureBank - Module 2: Deposit & Withdrawal (Milestone 1)
 # - deposit money
