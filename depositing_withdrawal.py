@@ -112,7 +112,6 @@ def deposit():
     print("✔ Deposit processed.")
     print(f"New balance: PHP {acct.balance:,.2f}")
 
-
 #  withdrawal
 # order of the checks:
 # account -> time deposit lock -> amount -> daily limit
