@@ -4,12 +4,11 @@
 # - manager can freeze then close it
 
 from datetime import date, timedelta   # for the maturity date
-
+from ui_helpers import print_main_menu_account_management, print_divider
 # account variables
 # these are global - module 2 uses them too
 
 current_role = ""          # set by accounts(role)
-
 has_account = False        # no account until we make one
 acc_number = ""
 holder_name = ""
@@ -34,11 +33,6 @@ TIME_DEPOSIT_MIN = 1000.0  # our own rule, brief doesn't say
 
 
 # ---------- helper functions ----------
-def line(char="=", length=50):
-    # just prints a divider line
-    print(char * length)
-
-
 def is_valid_amount(text):
     # checks if the input is a positive number like 500 or 500.75
     text = text.strip()
@@ -193,9 +187,9 @@ def view_account():
         print("X No account exists yet. Create one first.")
         return
 
-    line("-")
+    print_divider()
     print("ACCOUNT DETAILS")
-    line("-")
+    print_divider()
     # shown for all types
     print(f"Account Number : {acc_number}")
     print(f"Holder Name    : {holder_name}")
@@ -217,7 +211,7 @@ def view_account():
         print(f"Term           : {term_days} days")
         print(f"Interest Rate  : {interest_rate:.2f}%")
         print(f"Matures On     : {maturity_date}")
-    line("-")
+    print_divider()
 
 
 # ---------- 3. freeze / close (manager only) ----------
@@ -268,14 +262,8 @@ def accounts(role):
     current_role = role
     running = True
     while running:
-        line()
-        print("ACCOUNT MANAGEMENT")
-        line()
-        print("1. Create New Account")
-        print("2. View Account Details")
-        print("3. Freeze / Close Account (Manager only)")
-        print("4. Return to Main Menu")
-        line("-")
+        print_main_menu_account_management()
+        print_divider()
         choice = input("Select an option: ").strip()
 
         if choice == "1":
@@ -283,8 +271,11 @@ def accounts(role):
         elif choice == "2":
             view_account()
         elif choice == "3":
-            freeze_or_close_account()
+            print("Work in progress...")
         elif choice == "4":
-            running = False        # goes back to the main menu
+            freeze_or_close_account()
+        elif choice == "5":
+            # goes back to the main menu
+            running = False
         else:
             print("X Invalid option. Please enter 1-4.")

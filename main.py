@@ -19,7 +19,6 @@ if current_staff is not None:
                 accounts("role")
             case "2":
                 deposit_withdrawal()
-                #Call future module here change this once done
             case "3":
                 #Call future module here change this once done
                 print("Work in progress...")
