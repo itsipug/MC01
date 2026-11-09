@@ -11,40 +11,41 @@ from login_access_control import is_branch_manager
 # account variables
 # these are global - module 2 uses them too
 
-current_role = ""          # set by accounts(role)
+current_role = ""          # set by accounts(), tells us who is logged in
 has_account = False        # no account until we make one
-acc_number = ""
-holder_name = ""
+acc_number = ""            # like BR01-00234
+holder_name = ""           # customer's name
 acc_type = ""              # Savings / Checking / TimeDeposit
 balance = 0.0
 status = ""                # Active -> Frozen -> Closed
-interest_rate = 0.0
-min_balance = 0.0          # savings only
-overdraft_limit = 0.0      # checking only
-term_days = 0              # time deposit only
+interest_rate = 0.0        # in percent, 2.5 means 2.5%
+min_balance = 0.0          # savings only, can't go below this
+overdraft_limit = 0.0      # checking only, how far below zero we allow
+term_days = 0              # time deposit only (30/60/90)
 maturity_date = ""         # time deposit only, like "2026-11-16"
 
 # account number = branch code + sequence
 BRANCH_CODE = "BR01"
-next_sequence = 234        # next number to give out
+next_sequence = 234        # next number to give out, goes up by 1 every new account
 
 # rules (capital letters so they're easier to change)
 SAVINGS_RATE = 2.5
 SAVINGS_MIN_BALANCE = 500.0
 CHECKING_OVERDRAFT_LIMIT = 5000.0
-TIME_DEPOSIT_MIN = 1000.0  # our own rule, brief doesn't say
+TIME_DEPOSIT_MIN = 1000.0
 
-
-# ---------- helper functions ----------
+# helper functions
+# small functions that other functions (and module 2) reuse
 def is_valid_amount(text):
     # checks if the input is a positive number like 500 or 500.75
     text = text.strip()
-    if text == "":
+    if text == "":          # user just pressed enter
         return False
     # remove one dot then check if only digits are left
     # this blocks letters, negatives, and stuff like 1.2.3
     if text.replace(".", "", 1).isdigit() == False:
         return False
+    # zero isn't a real deposit/withdrawal so reject it too
     if float(text) <= 0:
         return False
     return True
@@ -79,9 +80,11 @@ def get_time_deposit_rate(days):
 
 # ---------- input functions ----------
 # all of these loop until the input is valid so it never crashes
+# on a wrong answer, it just asks again
 
 def ask_account_type():
     while True:
+        # lower() so "Savings", "savings", "SAVINGS" all work
         text = input("Enter account type (Savings/Checking/TimeDeposit): ").strip().lower()
         if text == "savings":
             return "Savings"
@@ -113,7 +116,7 @@ def ask_initial_deposit(minimum):
             return float(text)
 
 
-# ---------- 1. create account ----------
+# 1. create account
 def create_account():
     # need global so we can change the variables at the top
     global has_account, acc_number, holder_name, acc_type, balance, status
@@ -168,8 +171,9 @@ def create_account():
     term_days = new_term
     maturity_date = new_maturity
     acc_number = make_account_number()
-    has_account = True
+    has_account = True                # now the other functions know an account exists
 
+    # show the summary, the lines depend on the account type
     print("✔ Account created successfully!")
     print(f"Account Number: {acc_number}")
     if acc_type == "TimeDeposit":
@@ -183,7 +187,7 @@ def create_account():
         print(f"Overdraft Limit: PHP {overdraft_limit:,.2f}")
     print(f"Balance: PHP {balance:,.2f}")
 
-# ---------- 2. view account ----------
+#  2. view account
 # only reads the variables, doesn't change anything
 def view_account():
     if has_account == False:
@@ -197,7 +201,7 @@ def view_account():
     print(f"Account Number : {acc_number}")
     print(f"Holder Name    : {holder_name}")
     if acc_type == "TimeDeposit":
-        print("Account Type   : Time Deposit")   # space is just for display
+        print("Account Type   : Time Deposit")
     else:
         print(f"Account Type   : {acc_type}")
     print(f"Status         : {status}")
@@ -217,12 +221,13 @@ def view_account():
     print_divider()
 
 
-# ---------- 3. freeze / close (manager only) ----------
+# 3. freeze / close (manager only)
 # Active -> Frozen -> Closed, one step each time
 def freeze_or_close_account(staff):
     global status
 
     # check the role first, before anything else
+    # this is the manager-only restriction
     if not is_branch_manager(staff):
         print("X ACCESS DENIED: Freezing/closing accounts requires Branch Manager privileges.")
         return
@@ -257,14 +262,14 @@ def freeze_or_close_account(staff):
             print("Cancelled. No changes made.")
 
 
-# ---------- module menu ----------
-# main menu calls this: accounts(role)
-# role is "TELLER" or "MANAGER" from the login
+#  module menu
+# main menu calls this: accounts(staff/role)
+# staff is the logged in staff info from the login (has the role inside)
 def accounts(staff):
     global current_role
-    current_role = staff["role"]
+    current_role = staff["role"]    # save the role so we know who is logged in
     running = True
-    while running:
+    while running:                  # keeps showing the menu until they pick return
         print_main_menu_account_management()
         print_divider()
         choice = input("Select an option: ").strip()
