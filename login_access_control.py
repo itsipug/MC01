@@ -3,7 +3,7 @@ from ui_helpers import print_header
 #Initializing Variables
 max_attempts = 3
 staff_credentials = {
-    "ilovetellers123": {"name": "Adrian Serrano", "password": "admin123", "role": "TELLER"},
+    "teller": {"name": "Adrian Serrano", "password": "admin123", "role": "TELLER"},
     "ihatemanagers321": {"name": "John Doe", "password": "321admin", "role": "BRANCH MANAGER"}
 }
 
