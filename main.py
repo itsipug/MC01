@@ -1,6 +1,8 @@
 from login_access_control import login,requires_manager
-from account_management import accounts
 from ui_helpers import print_divider, print_main_menu
+from account_management import accounts
+from depositing_withdrawal import deposit_withdrawal
+
 
 current_staff = login()
 
@@ -14,10 +16,10 @@ if current_staff is not None:
         match choice:
             case "1":
                 #Brings user over to accounts management and everything is handled separately in accounts management
-                accounts()
+                accounts("role")
             case "2":
+                deposit_withdrawal()
                 #Call future module here change this once done
-                print("Work in progress...")
             case "3":
                 #Call future module here change this once done
                 print("Work in progress...")
@@ -37,9 +39,6 @@ if current_staff is not None:
 
 
 
-
-from account_management import accounts
-from depositing_withdrawal import deposit_withdrawal
 
 # TEMPORARY for testing. Delete this line once your pair's login gives you the role.
 current_role = "MANAGER"
