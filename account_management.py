@@ -13,19 +13,17 @@ from login_access_control import is_branch_manager
 
 all_accounts = {}
 
-
-current_role = ""          # set by accounts(), tells us who is logged in
-has_account = False        # no account until we make one
-acc_number = ""            # like BR01-00234
-holder_name = ""           # customer's name
-acc_type = ""              # Savings / Checking / TimeDeposit
+has_account = False
+acc_number = ""
+holder_name = ""
+acc_type = ""
 balance = 0.0
-status = ""                # Active -> Frozen -> Closed
-interest_rate = 0.0        # in percent, 2.5 means 2.5%
-min_balance = 0.0          # savings only, can't go below this
-overdraft_limit = 0.0      # checking only, how far below zero we allow
-term_days = 0              # time deposit only (30/60/90)
-maturity_date = ""         # time deposit only, like "2026-11-16"
+status = ""
+interest_rate = 0.0
+min_balance = 0.0
+overdraft_limit = 0.0
+term_days = 0
+maturity_date = ""
 
 # account number = branch code + sequence
 BRANCH_CODE = "BR01"
@@ -147,12 +145,12 @@ def print_new_account(number):
         print(f"Overdraft Limit: PHP {account['overdraft_limit']:,.2f}")
     print(f"Balance: PHP {account['balance']:,.2f}")
 
-    def create_account():
+def create_account():
 
-        name = input("Enter account holder name: ").strip()
-        if name == "":
-            print("X Name cannot be empty. Try again!")
-            return
+    name = input("Enter account holder name: ").strip()
+    if name == "":
+        print("X Name cannot be empty. Try again!")
+        return
 
     chosen_type = ask_account_type()
 
@@ -211,26 +209,25 @@ def view_account():
     print("ACCOUNT DETAILS")
     print_divider()
     # shown for all types
-    print(f"Account Number : {acc_number}")
-    print(f"Holder Name    : {holder_name}")
-    if acc_type == "TimeDeposit":
+    print(f"Account Number : {number}")
+    print(f"Holder Name    : {account['holder_name']}")
+    if account["acc_type"] == "TimeDeposit":
         print("Account Type   : Time Deposit")
     else:
-        print(f"Account Type   : {acc_type}")
-    print(f"Status         : {status}")
-    print(f"Balance        : PHP {balance:,.2f}")
+        print(f"Account Type   : {account['acc_type']}")
+    print(f"Status         : {account['status']}")
+    print(f"Balance        : PHP {account['balance']:,.2f}")
 
-    # extra lines per type
-    if acc_type == "Savings":
-        print(f"Interest Rate  : {interest_rate:.2f}%")
-        print(f"Minimum Balance: PHP {min_balance:,.2f}")
-    elif acc_type == "Checking":
-        print(f"Overdraft Limit: PHP {overdraft_limit:,.2f}")
+    if account["acc_type"] == "Savings":
+        print(f"Interest Rate  : {account['interest_rate']:.2f}%")
+        print(f"Minimum Balance: PHP {account['min_balance']:,.2f}")
+    elif account["acc_type"] == "Checking":
+        print(f"Overdraft Limit: PHP {account['overdraft_limit']:,.2f}")
         print("Overdraft Fee  : PHP 50.00")
     else:
-        print(f"Term           : {term_days} days")
-        print(f"Interest Rate  : {interest_rate:.2f}%")
-        print(f"Matures On     : {maturity_date}")
+        print(f"Term           : {account['term_days']} days")
+        print(f"Interest Rate  : {account['interest_rate']:.2f}%")
+        print(f"Matures On     : {account['maturity_date']}")
     print_divider()
 
 # search accounts
