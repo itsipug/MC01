@@ -37,3 +37,20 @@ def print_main_menu_deposit_withdrawal():
     print("1. Deposit")
     print("2. Withdrawal")
     print("3. Return to Main Menu")
+
+def print_main_menu_fund_transfer():
+    """Prints full main menu for fund transfer module"""
+    print_header("SecureBank - Fund Transfer")
+    print("1. Internal Transfer (Secure Bank to Secure Bank)")
+    print("2. Interbank Transfer (External Bank)")
+    print("3. Return to Main Menu")
+
+def print_main_menu_statements():
+    """Prints full main menu for statements module"""
+    print_header("SecureBank - Statements and Interest Posting")
+    print("1. View Statement (Filtered)")
+    print("2. Run Monthly Interest Posting")
+    print("3. Return to Main Menu")
+
+def print_error(message):
+    print(f"✖ ERROR: {message}")

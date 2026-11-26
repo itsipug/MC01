@@ -2,7 +2,8 @@ from login_access_control import login,requires_manager
 from ui_helpers import print_divider, print_main_menu
 from account_management import accounts
 from depositing_withdrawal import deposit_withdrawal
-
+from fund_transfer import fund_transfer
+from statements_interests import statements_interests
 
 current_staff = login()
 
@@ -21,11 +22,9 @@ if current_staff is not None:
             case "2":
                 deposit_withdrawal()
             case "3":
-                #Call future module here change this once done
-                print("Work in progress...")
+                fund_transfer()
             case "4":
-                #Call future module here change this once done
-                print("Work in progress...")
+                statements_interests()
             case "5":
                 #Checks if user is branch manager otherwise is restricted from access
                 if requires_manager(current_staff):
@@ -36,7 +35,5 @@ if current_staff is not None:
                 break
             case _:
                 print("Invalid option")
-
-
 
 
