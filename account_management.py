@@ -11,6 +11,9 @@ from login_access_control import is_branch_manager
 # account variables
 # these are global - module 2 uses them too
 
+all_accounts = {}
+
+
 current_role = ""          # set by accounts(), tells us who is logged in
 has_account = False        # no account until we make one
 acc_number = ""            # like BR01-00234
@@ -50,7 +53,6 @@ def is_valid_amount(text):
         return False
     return True
 
-
 def ask_yes_no(prompt):
     # keeps asking until y or n, returns True if y
     while True:
@@ -77,6 +79,16 @@ def get_time_deposit_rate(days):
     else:  # 90 days
         return 4.75
 
+def find_account():
+    if len(all_accounts) == 0:
+        print("X No accounts exist yet. Create one first.")
+        return ""
+
+    entered = input("Enter account number: ").strip().upper()
+    if entered not in all_accounts:
+        print("X Account not found.")
+        return ""
+    return entered
 
 # ---------- input functions ----------
 # all of these loop until the input is valid so it never crashes
@@ -117,82 +129,83 @@ def ask_initial_deposit(minimum):
 
 
 # 1. create account
-def create_account():
-    # need global so we can change the variables at the top
-    global has_account, acc_number, holder_name, acc_type, balance, status
-    global interest_rate, min_balance, overdraft_limit, term_days, maturity_date
 
-    # only one acc at a time (ok if the old one is closed)
-    if has_account and status != "Closed":
-        print("X An active account already exists. Only one account is allowed")
-        print("  at a time. Close it first.")
-        return
+def print_new_account(number):
+        # shows the summary of a newly made account
+        account = all_accounts[number]  # get this account's dictionary
 
-    name = input("Enter account holder name: ").strip()
-    if name == "":
-        print("X Name cannot be empty. Try again!")
-        return
+        print("✔ Account created successfully!")
+        print(f"Account Number: {number}")
+        if account["acc_type"] == "TimeDeposit":
+            print(f"Type: Time Deposit ({account['term_days']}-day term, matures {account['maturity_date']})")
+            print(f"Interest Rate: {account['interest_rate']:.2f}% ({account['term_days']}-day tier)")
+        elif account["acc_type"] == "Savings":
+            print("Type: Savings")
+            print(f"Interest Rate: {account['interest_rate']:.2f}%")
+        else:
+            print("Type: Checking")
+            print(f"Overdraft Limit: PHP {account['overdraft_limit']:,.2f}")
+        print(f"Balance: PHP {account['balance']:,.2f}")
+
+    def create_account():
+
+        name = input("Enter account holder name: ").strip()
+        if name == "":
+            print("X Name cannot be empty. Try again!")
+            return
 
     chosen_type = ask_account_type()
 
-    #  only save them at the end so nothing gets half saved if the user quits
-    new_term = 0
-    new_maturity = ""
+# only save them at the end so nothing gets half saved if the user quits
+    term = 0
+    maturity = ""
+    rate = 0.0
+    min_bal = 0.0
+    overdraft = 0.0
+    opening_minimum = 0.01
+
     if chosen_type == "Savings":
-        new_rate = SAVINGS_RATE
-        new_min = SAVINGS_MIN_BALANCE
-        new_overdraft = 0.0
+        rate = SAVINGS_RATE
+        min_bal = SAVINGS_MIN_BALANCE
         opening_minimum = SAVINGS_MIN_BALANCE     # has to open with at least 500
     elif chosen_type == "Checking":
-        new_rate = 0.0                            # no interest for checking
-        new_min = 0.0
-        new_overdraft = CHECKING_OVERDRAFT_LIMIT
-        opening_minimum = 0.01                    # any amount is ok as long as its more than 0.01
+        overdraft = CHECKING_OVERDRAFT_LIMIT
     else:  # time deposit
-        new_term = ask_term()
-        new_rate = get_time_deposit_rate(new_term)
-        new_min = 0.0
-        new_overdraft = 0.0
+        term = ask_term()
+        rate = get_time_deposit_rate(term)
         opening_minimum = TIME_DEPOSIT_MIN
         # today + the term = maturity date
-        new_maturity = str(date.today() + timedelta(days=new_term))
+        maturity = str(date.today() + timedelta(days=term))
 
     # initial deposit
     deposit = ask_initial_deposit(opening_minimum)
 
-    # all valid, now we save everything
-    holder_name = name
-    acc_type = chosen_type
-    balance = deposit
-    status = "Active"                 # new accounts always start active
-    interest_rate = new_rate
-    min_balance = new_min
-    overdraft_limit = new_overdraft
-    term_days = new_term
-    maturity_date = new_maturity
-    acc_number = make_account_number()
-    has_account = True                # now the other functions know an account exists
+    # all valid. save the account into all_accounts
+    number = make_account_number()
+    all_accounts[number] = {
+        "holder_name": name,
+        "acc_type": chosen_type,
+        "balance": deposit,
+        "status": "Active",  # new accounts always start active
+        "interest_rate": rate,
+        "min_balance": min_bal,
+        "overdraft_limit": overdraft,
+        "term_days": term,
+        "maturity_date": maturity,
+    }
 
-    # show the summary, the lines depend on the account type
-    print("✔ Account created successfully!")
-    print(f"Account Number: {acc_number}")
-    if acc_type == "TimeDeposit":
-        print(f"Type: Time Deposit ({term_days}-day term, matures {maturity_date})")
-        print(f"Interest Rate: {interest_rate:.2f}% ({term_days}-day tier)")
-    elif acc_type == "Savings":
-        print("Type: Savings")
-        print(f"Interest Rate: {interest_rate:.2f}%")
-    else:
-        print("Type: Checking")
-        print(f"Overdraft Limit: PHP {overdraft_limit:,.2f}")
-    print(f"Balance: PHP {balance:,.2f}")
+    print_new_account(number)
+
+
 
 #  2. view account
 # only reads the variables, doesn't change anything
 def view_account():
-    if has_account == False:
-        print("X No account exists yet. Create one first.")
+    number = find_account()
+    if number == "":
         return
+
+    account = all_accounts[number]
 
     print_divider()
     print("ACCOUNT DETAILS")
@@ -220,6 +233,50 @@ def view_account():
         print(f"Matures On     : {maturity_date}")
     print_divider()
 
+# search accounts
+
+def search_accounts():
+    if len(all_accounts) == 0:
+        print("X No accounts exist yet. Create one first.")
+        return
+
+    choice = input("Search by (1) Name or (2) Type: ").strip()
+    if choice == "1":
+        keyword = input("Enter name (or part of it): ").strip().lower()
+        if keyword == "":
+            print("X Search cannot be empty.")
+            return
+    elif choice == "2":
+        keyword = ask_account_type()
+    else:
+        print("X Invalid choice. Enter 1 or 2.")
+        return
+
+    found = 0
+    print_divider()
+    # go through every account number in the dictionary
+    for number in all_accounts:
+        account = all_accounts[number]
+
+        # check if this account matches what we searched
+        is_match = False
+        if choice == "1" and keyword in account["holder_name"].lower():
+            is_match = True
+        if choice == "2" and account["acc_type"] == keyword:
+            is_match = True
+
+        if is_match:
+            result = f"{number} | {account['holder_name']} | PHP {account['balance']:,.2f} | {account['status']}"
+            if account["acc_type"] == "TimeDeposit":
+                result = result + f" | Matures {account['maturity_date']}"
+            print(result)
+            found = found + 1
+
+    if found == 0:
+        print("No accounts matched your search.")
+    else:
+        print(f"- Search Results ({found} found) -")
+    print_divider()
 
 # 3. freeze / close (manager only)
 # Active -> Frozen -> Closed, one step each time
@@ -236,27 +293,27 @@ def freeze_or_close_account(staff):
         print("X No account exists yet.")
         return
 
-    # make sure it's the right account
-    entered = input("Enter account number: ").strip().upper()
-    if entered != acc_number:
-        print("X Account not found.")
+    number = find_account()
+    if number == "":
         return
 
-    print(f"Current status: {status}")
+    account = all_accounts[number]
+    print(f"Current status: {account['status']}")
 
-    if status == "Closed":
+
+    if account["status"] == "Closed":
         print("X This account is already closed.")
-    elif status == "Active":
+    elif account["status"] == "Active":
         # active -> frozen
         if ask_yes_no("Freeze this account? (y/n): "):
-            status = "Frozen"
+            account["status"] = "Frozen"
             print("✔ Account is now FROZEN.")
         else:
             print("Cancelled. No changes made.")
     else:  # frozen
         # frozen -> closed (can't undo so we ask first)
         if ask_yes_no("Close this account permanently? (y/n): "):
-            status = "Closed"
+            account["status"] = "Closed"
             print("✔ Account is now CLOSED.")
         else:
             print("Cancelled. No changes made.")
