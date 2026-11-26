@@ -131,21 +131,21 @@ def ask_initial_deposit(minimum):
 # 1. create account
 
 def print_new_account(number):
-        # shows the summary of a newly made account
-        account = all_accounts[number]  # get this account's dictionary
+    # shows the summary of a newly made account
+    account = all_accounts[number]  # get this account's dictionary
 
-        print("✔ Account created successfully!")
-        print(f"Account Number: {number}")
-        if account["acc_type"] == "TimeDeposit":
-            print(f"Type: Time Deposit ({account['term_days']}-day term, matures {account['maturity_date']})")
-            print(f"Interest Rate: {account['interest_rate']:.2f}% ({account['term_days']}-day tier)")
-        elif account["acc_type"] == "Savings":
-            print("Type: Savings")
-            print(f"Interest Rate: {account['interest_rate']:.2f}%")
-        else:
-            print("Type: Checking")
-            print(f"Overdraft Limit: PHP {account['overdraft_limit']:,.2f}")
-        print(f"Balance: PHP {account['balance']:,.2f}")
+    print("✔ Account created successfully!")
+    print(f"Account Number: {number}")
+    if account["acc_type"] == "TimeDeposit":
+        print(f"Type: Time Deposit ({account['term_days']}-day term, matures {account['maturity_date']})")
+        print(f"Interest Rate: {account['interest_rate']:.2f}% ({account['term_days']}-day tier)")
+    elif account["acc_type"] == "Savings":
+        print("Type: Savings")
+        print(f"Interest Rate: {account['interest_rate']:.2f}%")
+    else:
+        print("Type: Checking")
+        print(f"Overdraft Limit: PHP {account['overdraft_limit']:,.2f}")
+    print(f"Balance: PHP {account['balance']:,.2f}")
 
     def create_account():
 
