@@ -333,7 +333,7 @@ def accounts(staff):
         elif choice == "2":
             view_account()
         elif choice == "3":
-            print("Work in progress...")
+            search_accounts()
         elif choice == "4":
             freeze_or_close_account(staff)
         elif choice == "5":

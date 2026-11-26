@@ -1,6 +1,6 @@
 from login_access_control import login,requires_manager
 from ui_helpers import print_divider, print_main_menu
-from account_management import accounts
+from account_management import accounts, search_accounts
 from depositing_withdrawal import deposit_withdrawal
 
 
@@ -22,7 +22,7 @@ if current_staff is not None:
                 deposit_withdrawal()
             case "3":
                 #Call future module here change this once done
-                print("Work in progress...")
+                search_accounts()
             case "4":
                 #Call future module here change this once done
                 print("Work in progress...")
